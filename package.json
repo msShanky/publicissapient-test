@@ -15,13 +15,15 @@
 		"@types/react": "^16.9.41",
 		"@types/react-dom": "^16.9.8",
 		"axios": "^0.19.2",
-		"chart.js": "^2.9.3",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",
+		"react-loader-spinner": "^3.1.14",
 		"react-redux": "^7.2.0",
 		"react-scripts": "3.4.1",
+		"recharts": "^1.8.5",
 		"redux": "^4.0.5",
 		"redux-logger": "^3.0.6",
+		"redux-persist": "^6.0.0",
 		"styled-components": "^5.1.1",
 		"typescript": "^3.7.5"
 	},
@@ -47,7 +49,9 @@
 		]
 	},
 	"devDependencies": {
+		"@types/react-loader-spinner": "^3.1.0",
 		"@types/react-redux": "^7.1.9",
+		"@types/recharts": "^1.8.14",
 		"@types/redux-logger": "^3.0.8",
 		"@types/styled-components": "^5.1.0"
 	}
