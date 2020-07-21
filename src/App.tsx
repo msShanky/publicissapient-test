@@ -4,7 +4,8 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import LandingPage from './components/container';
 import { Provider } from 'react-redux';
 import { HackerNewsTheme } from './HackerNewsTheme';
-import { store } from './store';
+import { store, persistor } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const GlobalStyle = createGlobalStyle`
 	body {
@@ -26,8 +27,10 @@ function App() {
 	return (
 		<ThemeProvider theme={HackerNewsTheme}>
 			<Provider store={store}>
-				<GlobalStyle />
-				<LandingPage />
+				<PersistGate loading={null} persistor={persistor}>
+					<GlobalStyle />
+					<LandingPage />
+				</PersistGate>
 			</Provider>
 		</ThemeProvider>
 	);

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactElement } from 'react';
 import styled from 'styled-components';
-import NewsHead from '../UI/NewsHead';
-import NewsItem from '../UI/NewsItem';
+import Loader from 'react-loader-spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFrontPageNews, upVote, hide, setPageNumber } from '../../reducers/news';
 import { RootState } from '../../reducers';
+
+import { Chart, Pagination, DataTable, Error } from '../UI';
 
 const CenteredDiv = styled.div`
 	display: flex;
@@ -15,39 +16,22 @@ const CenteredDiv = styled.div`
 	margin: auto;
 `;
 
-const DataTable = styled.table`
-	width: 100%;
-	border-collapse: collapse;
-	margin-top: 2%;
-`;
-
-const RightDockedNavigation = styled.div`
-	align-self: flex-end;
-	width: 18%;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-`;
-
-const NavigationWrapper = styled.div`
-	display: flex;
-	justify-content: space-around;
-	color: ${({ theme }) => theme.colors.main};
-	align-items: flex-end;
-`;
-
-const NavigationButton = styled.button`
-	color: ${({ theme }) => theme.colors.main};
-	font-weight: bold;
+const SpinnerWrapper = styled.div`
+	text-align: center;
+	margin-top: 20%;
 `;
 
 const LandingPage = () => {
 	const dispatch = useDispatch();
-	const { data, pageNumber }: NewsState = useSelector((state: RootState) => state.news);
+	const { data, pageNumber, isFetching, isError }: NewsState = useSelector(
+		(state: RootState) => state.news
+	);
 
 	useEffect(() => {
-		dispatch(getFrontPageNews());
-	}, [dispatch]);
+		if (data.length <= 0) {
+			dispatch(getFrontPageNews());
+		}
+	}, [dispatch, data]);
 
 	const upVoteNews = (id: string): void => {
 		dispatch(upVote(id));
@@ -69,36 +53,27 @@ const LandingPage = () => {
 		dispatch(setPageNumber(pageToBeFetched));
 	};
 
-	return (
-		<CenteredDiv className='App'>
-			<DataTable>
-				<thead>
-					<NewsHead />
-				</thead>
-				<tbody>
-					{data.map(
-						(newsItem: NewsHit, index: number) =>
-							!newsItem.isHidden && (
-								<NewsItem
-									key={`NewsItem_${index + 1}`}
-									upVote={upVoteNews}
-									hideNews={hideNews}
-									news={newsItem}
-								/>
-							)
-					)}
-				</tbody>
-			</DataTable>
-			<RightDockedNavigation>
-				<p>Current Page : {pageNumber} </p>
-				<NavigationWrapper>
-					<NavigationButton onClick={() => getNews('prev')}>Previous</NavigationButton>
-					<span>|</span>
-					<NavigationButton onClick={() => getNews('next')}>Next</NavigationButton>
-				</NavigationWrapper>
-			</RightDockedNavigation>
-		</CenteredDiv>
-	);
+	const LoaderComponent = (): ReactElement => {
+		if (isFetching) {
+			return (
+				<SpinnerWrapper>
+					<Loader type='TailSpin' />
+				</SpinnerWrapper>
+			);
+		}
+		if (!isFetching && isError) {
+			return <Error />;
+		}
+		return (
+			<CenteredDiv className='App'>
+				<DataTable news={data} upVoteNews={upVoteNews} hideNews={hideNews} />
+				<Pagination pageNumber={pageNumber} getNews={getNews} />
+				<Chart data={data} />
+			</CenteredDiv>
+		);
+	};
+
+	return <LoaderComponent />;
 };
 
 export default React.memo(LandingPage);
