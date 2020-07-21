@@ -5,6 +5,7 @@ const HackerNewsTheme: DefaultTheme = {
 		main: '#e46d23',
 		secondary: '#e9e9e2',
 		darkSecondary: '#e6e6df',
+		background: '#f5f3ec',
 	},
 };
 

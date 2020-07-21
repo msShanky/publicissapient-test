@@ -1,12 +1,19 @@
 import React, { FunctionComponent } from 'react';
 import styled from 'styled-components';
+import { ReactComponent as UpVoteIcon } from '../../images/up_icon.svg';
 
 interface NewsItemStyleProps {
 	textAlign?: 'center' | 'left';
 }
 
-interface NewsItemPros {
+interface NewsItemProps {
 	news: NewsHit;
+	upVote(id: string): void;
+	hideNews(id: string): void;
+}
+
+interface ButtonStyleProps {
+	width?: string;
 }
 
 const NewsTitle = styled.span`
@@ -39,18 +46,11 @@ const NewsHideWrapper = styled.span`
 	padding-left: 5px;
 `;
 
-const DefaultButton = styled.button`
-	border: none;
-	::focus ::active {
-		border: ${({ theme }) => `${theme.colors.main} solid 0.5px`};
-	}
-	background: none;
-	:hover {
-		cursor: pointer;
-	}
+const DefaultButton = styled.button<ButtonStyleProps>`
+	width: ${({ width }) => (width ? width : 'auto')};
 `;
 
-const NewsItem: FunctionComponent<NewsItemPros> = ({ news }) => {
+const NewsItem: FunctionComponent<NewsItemProps> = ({ news, upVote, hideNews }) => {
 	const currentTime = new Date().getTime();
 	const newsTime = new Date(news.created_at).getTime();
 	let diff = (newsTime - currentTime) / 1000;
@@ -62,8 +62,9 @@ const NewsItem: FunctionComponent<NewsItemPros> = ({ news }) => {
 			<NewsItemStyle>{news.num_comments}</NewsItemStyle>
 			<NewsItemStyle>{news.points}</NewsItemStyle>
 			<NewsItemStyle>
-				<DefaultButton>
-					<i className='fas fa-sort-up'></i>
+				<DefaultButton width={'25%'} onClick={() => upVote(news.objectID)}>
+					{/* <i className='fas fa-sort-up'></i> */}
+					<UpVoteIcon />
 				</DefaultButton>
 			</NewsItemStyle>
 			<NewsItemStyle textAlign='left'>
@@ -72,7 +73,7 @@ const NewsItem: FunctionComponent<NewsItemPros> = ({ news }) => {
 					{diff} {diff <= 1 ? 'hour' : 'hours'} ago
 				</NewsTimeStyle>
 				<NewsHideWrapper>
-					[<DefaultButton>hide</DefaultButton>]
+					[<DefaultButton onClick={() => hideNews(news.objectID)}>hide</DefaultButton>]
 				</NewsHideWrapper>
 			</NewsItemStyle>
 		</NewsItemRow>

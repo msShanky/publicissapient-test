@@ -13,6 +13,7 @@ declare interface NewsHit {
 	story_url: null | string;
 	title: string;
 	url: string;
+	isHidden?: boolean;
 }
 
 declare interface FrontPageNews {
@@ -32,4 +33,7 @@ declare type NewsState = {
 	isFetching: boolean;
 	isError: boolean;
 	error: string;
+	pageNumber: number;
 };
+
+declare type NewsFetchType = 'prev' | 'next';
